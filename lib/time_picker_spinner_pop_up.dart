@@ -24,6 +24,9 @@ class TimePickerSpinnerPopUp extends StatefulWidget {
     this.paddingHorizontalOverlay,
     this.timeWidgetBuilder,
     this.minuteInterval = 1,
+    this.backGroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.containerAndTextColor = Colors.white,
     this.textStyle,
     this.iconSize = 18,
     this.padding = const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -37,6 +40,12 @@ class TimePickerSpinnerPopUp extends StatefulWidget {
 
   /// Barrier color when pop up show
   final Color barrierColor;
+
+  final Color backGroundColor;
+
+  final Color textColor;
+
+  final Color containerAndTextColor;
 
   /// Controller for time picker spinner
   final TimePickerSpinnerController? controller;
@@ -213,8 +222,7 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
         data: Theme.of(context),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-                color: Theme.of(context).colorScheme.onSurface, width: 0.5),
+            border: Border.all(color: widget.containerAndTextColor, width: 0.5),
             borderRadius: BorderRadius.circular(10),
           ),
           padding: widget.padding,
@@ -225,7 +233,7 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
                 iconAssets,
                 height: widget.iconSize,
                 width: widget.iconSize,
-                color: Theme.of(context).iconTheme.color,
+                color: widget.containerAndTextColor,
               ),
               const SizedBox(width: 8),
               Text(
@@ -235,7 +243,7 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
                       fontSize: 14,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: widget.containerAndTextColor,
                     ),
               ),
             ],
@@ -290,7 +298,7 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
               fontSize: 14,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.w400,
-              color: Theme.of(context).textTheme.bodyMedium?.color,
+              color: widget.textColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -312,7 +320,7 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
                 fontSize: 14,
                 fontStyle: FontStyle.normal,
                 fontWeight: FontWeight.w400,
-                color: Theme.of(context).textTheme.bodyMedium?.color,
+                color: widget.textColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -321,8 +329,8 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
 
         Widget menu = Container(
           decoration: BoxDecoration(
+            color: widget.backGroundColor,
             borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF000000).withOpacity(0.08),
@@ -335,50 +343,57 @@ class _TimePickerSpinnerPopUpState extends State<TimePickerSpinnerPopUp>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 225,
-                child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    textTheme: CupertinoTextThemeData(
-                        dateTimePickerTextStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500,
-                    )),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: size.width + 2 * _paddingHorizontal,
-                      ),
-                      child: CupertinoDatePicker(
-                        minimumDate: widget.minTime,
-                        maximumDate: widget.maxTime,
-                        minuteInterval: widget.minuteInterval,
-                        initialDateTime: _selectedDateTimeSpinner,
-                        use24hFormat: true,
-                        mode: widget.mode,
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        onDateTimeChanged: (dateTime) {
-                          if (widget.minTime != null &&
-                              dateTime.isBefore(widget.minTime!)) {
-                            _selectedDateTimeSpinner = widget.minTime!;
-                          } else if (widget.maxTime != null &&
-                              dateTime.isAfter(widget.maxTime!)) {
-                            _selectedDateTimeSpinner = widget.maxTime!;
-                          } else {
-                            _selectedDateTimeSpinner = dateTime;
-                          }
-                        },
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: widget.backGroundColor),
+                  height: 225,
+                  child: CupertinoTheme(
+                    data: CupertinoThemeData(
+                      textTheme: CupertinoTextThemeData(
+                          dateTimePickerTextStyle: TextStyle(
+                        fontSize: 16,
+                        color: widget.textColor,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                      )),
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: size.width + 2 * _paddingHorizontal,
+                        ),
+                        child: CupertinoDatePicker(
+                          minimumDate: widget.minTime,
+                          maximumDate: widget.maxTime,
+                          minuteInterval: widget.minuteInterval,
+                          initialDateTime: _selectedDateTimeSpinner,
+                          use24hFormat: true,
+                          mode: widget.mode,
+                          backgroundColor: widget.backGroundColor,
+                          onDateTimeChanged: (dateTime) {
+                            if (widget.minTime != null &&
+                                dateTime.isBefore(widget.minTime!)) {
+                              _selectedDateTimeSpinner = widget.minTime!;
+                            } else if (widget.maxTime != null &&
+                                dateTime.isAfter(widget.maxTime!)) {
+                              _selectedDateTimeSpinner = widget.maxTime!;
+                            } else {
+                              _selectedDateTimeSpinner = dateTime;
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
               DefaultTextStyle(
-                style: const TextStyle(decoration: TextDecoration.none),
+                style: const TextStyle(
+                    decoration: TextDecoration.none, color: Colors.white),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
